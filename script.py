@@ -108,7 +108,7 @@ def generateTweet(_events_formatted, Nowdt):
             tweets.append(Nowdt.strftime("%m/%d") + "のコンテスト予定")
             tweet_contestinfo = " %s%s %s\n" % (_contestAcronym, _dt.strftime("%H:%M"), _summary)
     if(tweet_contestinfo == ""):
-        return []
+        return ["本日" + Nowdt.strftime("%m/%d") + "はコンテストがありません."]
     elif(tweetsNum):
         tweets[tweetsNum] += "(" + str(tweetsNum+1) + ")\n" + tweet_contestinfo
     else:
@@ -121,10 +121,9 @@ def lambda_handler(event, context):
     Nowdt = datetime.date.today()
     Twitter_api = tweepy.API(Twitter_OAuth())
     tweets = generateTweet(getContestDatafromAPI(Nowdt), Nowdt)
-    if(tweets):
-        for tweet in tweets:
-            print(tweet)
-            Twitter_api.update_status(status=tweet)
+    for tweet in tweets:
+        print(tweet)
+        Twitter_api.update_status(status=tweet)
 
 
 if __name__ == '__main__':
