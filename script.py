@@ -13,6 +13,7 @@ import tweepy
 def Twitter_OAuth():
     authFile = open("Twitter_auth.json")
     authList = json.load(authFile)
+    authFile.close()
     auth = tweepy.OAuthHandler(authList["consumer_key"], authList["consumer_secret"])
     auth.set_access_token(authList["token"], authList["token_secret"])
     return auth
@@ -24,7 +25,7 @@ def GoogleCalAPI():
     scopes = ['https://www.googleapis.com/auth/calendar.readonly']
     credentials = ServiceAccountCredentials.from_json_keyfile_name(client_secret_file, scopes=scopes)
     http_auth = credentials.authorize(Http())
-    service = apiclient.discovery.build("calendar", "v3", http=http_auth)
+    service = apiclient.discovery.build("calendar", "v3", http=http_auth, cache_discovery=False)
     return service
 
 
