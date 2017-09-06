@@ -6,6 +6,8 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 import apiclient
 import json
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
 import tweepy
 
 
@@ -32,7 +34,7 @@ def GoogleCalAPI():
 # Googleカレンダーからコンテストデータを取得
 def getContestDatafromAPI(Nowdt):
     _events_formatted = []
-    Nowdt = Nowdt.replace(second=0, microsecond=0)
+    Nowdt = Nowdt.replace(hour=8, minute=0, second=0, microsecond=0)
     Nowdate = Nowdt.date()
 
     # コンテスト情報が載ったGoogleカレンダー
@@ -86,7 +88,6 @@ def getContestDatafromAPI(Nowdt):
                 # ツイート有効期間内か判定(08:00~翌07:59)
                 dtDiff = _dt - Nowdt
                 if(dtDiff.days != 0): continue
-
                 _isNextDay = ""
                 if(dtDiff.seconds >= 57600): _isNextDay = "翌"
                 _events_formatted.append([_dt, _isNextDay, _contestAcronym, _summary])
@@ -95,12 +96,30 @@ def getContestDatafromAPI(Nowdt):
     return _events_formatted
 
 
+# コンテスト情報をスクレイピング
+def scrapeContestInfo():
+    urlList = ["https://csacademy.com/contests/"]
+    contestTableList = [{"class": " table-30"}]
+    rows = []
+    for url, contestTable in zip(urlList, contestTableList):
+        html = urlopen(url)
+        bsObj = BeautifulSoup(html, "html.parser")
+        print(bsObj)
+        table = bsObj.find_all("table", contestTable)
+        print(table)
+        rows = table.find_all("tr")
+        print(rows)
+        # TODO: javascript要求サイトへの対応
+
+
 # ツイート文字列のリストを生成
 def generateTweet(_events_formatted, Nowdt):
     tweets = [Nowdt.strftime("%m/%d") + "のコンテスト予定"]
     tweetsNum = 0
     tweet_contestinfo = ""
     eventsNum = len(_events_formatted)
+    if(eventsNum == 0):
+        return ["本日" + Nowdt.strftime("%m/%d") + "はコンテストがありません."]
     tweetLength = (124 - 15 * eventsNum) // eventsNum
     eventsCount = 0
     for _dt, _isNextDay, _contestAcronym, _summary in _events_formatted:
@@ -116,9 +135,7 @@ def generateTweet(_events_formatted, Nowdt):
             tweets.append(Nowdt.strftime("%m/%d") + "のコンテスト予定")
             eventsCount = 1
             tweet_contestinfo = " %s%s %s\n" % (_contestAcronym, _dt.strftime("%H:%M"), _summary)
-    if(tweet_contestinfo == ""):
-        return ["本日" + Nowdt.strftime("%m/%d") + "はコンテストがありません."]
-    elif(tweetsNum):
+    if(tweetsNum):
         tweets[tweetsNum] += "(" + str(tweetsNum+1) + ")\n" + tweet_contestinfo
     else:
         tweets[tweetsNum] += "\n" + tweet_contestinfo
@@ -132,7 +149,7 @@ def lambda_handler(event, context):
     tweets = generateTweet(getContestDatafromAPI(Nowdt), Nowdt)
     for tweet in tweets:
         print(tweet)
-        Twitter_api.update_status(status=tweet)
+        # Twitter_api.update_status(status=tweet)
 
 
 if __name__ == '__main__':
