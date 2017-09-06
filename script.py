@@ -32,6 +32,8 @@ def GoogleCalAPI():
 # Googleカレンダーからコンテストデータを取得
 def getContestDatafromAPI(Nowdt):
     _events_formatted = []
+    Nowdt = Nowdt.replace(second=0, microsecond=0)
+    Nowdate = Nowdt.date()
 
     # コンテスト情報が載ったGoogleカレンダー
     calendar_id = [
@@ -50,8 +52,8 @@ def getContestDatafromAPI(Nowdt):
     # 競プロのコンテストであると決定する文字列リスト
     # いずれかが含まれていればprint対象に含める
     ComproConString = ["AtCoder", "Round", "SRM", "Cup", "contest"]
-    dtfrom = Nowdt.isoformat() + "T00:00:00.000000Z"
-    dtto = (Nowdt + datetime.timedelta(days=1)).isoformat() + "T00:00:00.000000Z"
+    dtfrom = Nowdate.isoformat() + "T00:00:00.000000Z"
+    dtto = (Nowdate + datetime.timedelta(days=2)).isoformat() + "T00:00:00.000000Z"
 
     # GoogleカレンダーAPIを利用可能にする
     service = GoogleCalAPI()
@@ -71,6 +73,9 @@ def getContestDatafromAPI(Nowdt):
             try:
                 _dt = parse(event["start"]["dateTime"]).astimezone(pytz.timezone('Asia/Tokyo'))
                 _summary = event["summary"]
+            except KeyError:
+                continue
+            else:
                 # 競プロのコンテストかどうか判定
                 isComproCon = False
                 for st in ComproConString:
@@ -79,16 +84,12 @@ def getContestDatafromAPI(Nowdt):
                         break
                 if(not isComproCon): continue
                 # ツイート有効期間内か判定(08:00~翌07:59)
-                dtDiff = _dt - datetime.datetime.combine(Nowdt, datetime.time(8)).astimezone(pytz.timezone('Asia/Tokyo'))
+                dtDiff = _dt - Nowdt
                 if(dtDiff.days != 0): continue
+
                 _isNextDay = ""
                 if(dtDiff.seconds >= 57600): _isNextDay = "翌"
-                # コンテスト情報が長すぎる場合カット
-                if(len(_summary) > 33):
-                    _summary = _summary[:31] + "…"
                 _events_formatted.append([_dt, _isNextDay, _contestAcronym, _summary])
-            except KeyError:
-                continue
     # 時系列順にソート
     _events_formatted.sort(key=lambda x: x[0])
     return _events_formatted
@@ -99,13 +100,21 @@ def generateTweet(_events_formatted, Nowdt):
     tweets = [Nowdt.strftime("%m/%d") + "のコンテスト予定"]
     tweetsNum = 0
     tweet_contestinfo = ""
+    eventsNum = len(_events_formatted)
+    tweetLength = (124 - 15 * eventsNum) // eventsNum
+    eventsCount = 0
     for _dt, _isNextDay, _contestAcronym, _summary in _events_formatted:
-        if(len(tweet_contestinfo) <= 85):
+        eventsCount += 1
+        # コンテスト情報が長すぎる場合カット
+        if(len(_summary) > tweetLength):
+            _summary = _summary[:(tweetLength - 1)] + "…"
+        if(eventsCount <= 3):
             tweet_contestinfo += " %s%s %s\n" % (_contestAcronym, _isNextDay + _dt.strftime("%H:%M"), _summary)
         else:
             tweets[tweetsNum] += "(" + str(tweetsNum+1) + ")\n" + tweet_contestinfo
             tweetsNum += 1
             tweets.append(Nowdt.strftime("%m/%d") + "のコンテスト予定")
+            eventsCount = 1
             tweet_contestinfo = " %s%s %s\n" % (_contestAcronym, _dt.strftime("%H:%M"), _summary)
     if(tweet_contestinfo == ""):
         return ["本日" + Nowdt.strftime("%m/%d") + "はコンテストがありません."]
@@ -118,7 +127,7 @@ def generateTweet(_events_formatted, Nowdt):
 
 # AWS lambda
 def lambda_handler(event, context):
-    Nowdt = datetime.date.today()
+    Nowdt = datetime.datetime.today().astimezone(pytz.timezone('Asia/Tokyo'))
     Twitter_api = tweepy.API(Twitter_OAuth())
     tweets = generateTweet(getContestDatafromAPI(Nowdt), Nowdt)
     for tweet in tweets:
