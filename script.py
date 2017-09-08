@@ -96,22 +96,6 @@ def getContestDatafromAPI(Nowdt):
     return _events_formatted
 
 
-# コンテスト情報をスクレイピング
-def scrapeContestInfo():
-    urlList = ["https://csacademy.com/contests/"]
-    contestTableList = [{"class": " table-30"}]
-    rows = []
-    for url, contestTable in zip(urlList, contestTableList):
-        html = urlopen(url)
-        bsObj = BeautifulSoup(html, "html.parser")
-        print(bsObj)
-        table = bsObj.find_all("table", contestTable)
-        print(table)
-        rows = table.find_all("tr")
-        print(rows)
-        # TODO: javascript要求サイトへの対応
-
-
 # ツイート文字列のリストを生成
 def generateTweet(_events_formatted, Nowdt):
     tweets = [Nowdt.strftime("%m/%d") + "のコンテスト予定"]
