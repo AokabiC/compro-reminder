@@ -48,7 +48,7 @@ def getContestDatafromAPI(Nowdt):
         # yukicoder
         "albqnro5hkurj3sqgb9r0d0v3eqrjdif@import.calendar.google.com",
         # CS Academy
-        "csacademy.com_9i5d2d1kredb9k886ee9geb1tc@group.calendar.google.com"
+        "8e3hcf3piim0pt3ibh4vfuh8rs@group.calendar.google.com"
     ]
     contest_acronym = ["[AC]", "[Cf]", "[TCO]", "[yuki]", "[CSA]"]
     # 競プロのコンテストであると決定する文字列リスト
