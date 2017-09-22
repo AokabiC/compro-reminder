@@ -48,12 +48,14 @@ def getContestDatafromAPI(Nowdt):
         # yukicoder
         "albqnro5hkurj3sqgb9r0d0v3eqrjdif@import.calendar.google.com",
         # CS Academy
-        "8e3hcf3piim0pt3ibh4vfuh8rs@group.calendar.google.com"
+        "8e3hcf3piim0pt3ibh4vfuh8rs@group.calendar.google.com",
+        # Others
+        "9oq67ntb3j77hnlem9tds02og0@group.calendar.google.com"
     ]
-    contest_acronym = ["[AC]", "[Cf]", "[TCO]", "[yuki]", "[CSA]"]
+    contest_acronym = ["[AC]", "[Cf]", "[TCO]", "[yuki]", "[CSA]", "[etc.]"]
     # 競プロのコンテストであると決定する文字列リスト
     # いずれかが含まれていればprint対象に含める
-    ComproConString = ["AtCoder", "Round", "SRM", "Cup", "contest"]
+    ComproConString = ["AtCoder", "Round", "SRM", "Cup", "ontest", "CODE", "Camp", "コンテスト", "ICPC"]
     dtfrom = Nowdate.isoformat() + "T00:00:00.000000Z"
     dtto = (Nowdate + datetime.timedelta(days=2)).isoformat() + "T00:00:00.000000Z"
 
