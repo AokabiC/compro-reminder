@@ -6,8 +6,6 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 import apiclient
 import json
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
 import tweepy
 
 
