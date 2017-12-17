@@ -52,7 +52,7 @@ def scrapeContestData(now_dt):
         contest[0] = parse(contest[0]).astimezone(pytz.timezone('Asia/Tokyo'))
         # ツイート有効期間内か判定(08:00~翌07:59)
         dt_diff = contest[0] - now_dt
-        if(dt_diff.days != 0):
+        if(dt_diff.days >= 1):
             continue
         contest_list.append(contest)
     return contest_list
@@ -125,13 +125,13 @@ def generateTweet(contest_list, now_dt):
         return ["本日" + now_dt.strftime("%m/%d") + "はコンテストがありません."]
 
     # 時系列順にソート
-    contest_list.sort(key=lambda x: x[0])
+    contest_list.sort(key=lambda x: x[0], reverse=True)
     NAME_LENGTH = (129 - 9 * 2) // 2
     for i in range(tweet_num):
         # ツイートが別れる場合(3コンテスト以上), 番号を表示
         tweet_count = ""
         if(tweet_num >= 2):
-            tweet_count = "(" + (i+1) + ")"
+            tweet_count = "(" + str(i+1) + ")"
         tweet = now_dt.strftime("%m/%d") + "のコンテスト予定" + tweet_count + "\n"
         for j in range(min(2, len(contest_list))):
             contest_dt, contest_acronym, contest_name = contest_list.pop()
@@ -156,7 +156,7 @@ def lambda_handler(event, context):
     tweets = generateTweet(scrapeContestData(now_dt)+getContestDatafromCal(now_dt), now_dt)
     for tweet in tweets:
         print(tweet)
-        twitter_api.update_status(status=tweet)
+        # twitter_api.update_status(status=tweet)
 
 
 if __name__ == '__main__':
