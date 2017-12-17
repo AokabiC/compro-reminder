@@ -49,7 +49,7 @@ def scrapeContestData(now_dt):
             text = cell.get_text()
             contest.append(text)
         contest.insert(1, contest_acronym)
-        contest[0] = parse(contest[0]).astimezone(pytz.timezone('Asia/Tokyo'))
+        contest[0] = parse(contest[0]+"+09:00").astimezone(pytz.timezone('Asia/Tokyo'))
         # ツイート有効期間内か判定(08:00~翌07:59)
         dt_diff = contest[0] - now_dt
         if(dt_diff.days >= 1):
