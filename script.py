@@ -156,7 +156,7 @@ def lambda_handler(event, context):
     tweets = generateTweet(scrapeContestData(now_dt)+getContestDatafromCal(now_dt), now_dt)
     for tweet in tweets:
         print(tweet)
-        # twitter_api.update_status(status=tweet)
+        twitter_api.update_status(status=tweet)
 
 
 if __name__ == '__main__':
