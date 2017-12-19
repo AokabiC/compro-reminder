@@ -114,7 +114,7 @@ def getContestDatafromCal(now_dt):
                 if(not is_procon):
                     continue
                 contest_list.append([contest_dt, contest_acronym, contest_name])
-        return contest_list
+    return contest_list
 
 
 # ツイート文字列のリストを生成
