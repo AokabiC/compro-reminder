@@ -67,7 +67,7 @@ def getContestDatafromCal(now_dt):
     dt_to = (now_dt + datetime.timedelta(hours=23, minutes=59, seconds=59)).isoformat()
     # 競プロのコンテストであると決定する文字列リスト
     # いずれかが含まれていればprint対象に含める
-    procon_strs = ["Round", "SRM", "Cup", "ontest", "CODE", "Camp", "コンテスト", "ICPC"]
+    procon_strs = ["Round", "SRM", "Cup", "ontest", "CODE", "Camp", "コンテスト", "ICPC", "Hello", "Good Bye"]
     # コンテスト情報が載ったGoogleカレンダー
     calendar_ids = [
         # AtCoder(スクレイピングに変更)
