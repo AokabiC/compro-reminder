@@ -52,7 +52,7 @@ def scrapeContestData(now_dt):
         contest[0] = parse(contest[0]+"+09:00").astimezone(pytz.timezone('Asia/Tokyo'))
         # ツイート有効期間内か判定(08:00~翌07:59)
         dt_diff = contest[0] - now_dt
-        if(dt_diff.days >= 1):
+        if(dt_diff.days < 0 or dt_diff.days >= 1):
             continue
         contest_list.append(contest)
     return contest_list
@@ -83,7 +83,7 @@ def getContestDatafromCal(now_dt):
         # Others
         "9oq67ntb3j77hnlem9tds02og0@group.calendar.google.com"
     ]
-    contest_acronyms = ["[Cf]", "[TCO]", "[yuki]", "[CSA]", "[etc.]"]
+    contest_acronyms = ["[Cf]", "[TC]", "[yuki]", "[CSA]", "[etc.]"]
     # GoogleカレンダーAPIを利用可能にする
     service = googleCalAPI()
     # 各カレンダーについてAPI実行
