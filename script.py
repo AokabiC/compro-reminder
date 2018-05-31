@@ -11,6 +11,31 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 
 
+class ContestData:
+    """コンテスト情報を格納するデータ構造"""
+    def __init__(self,
+                 name: str,
+                 site: str,
+                 begin: datetime.datetime=datetime.datetime.min,
+                 duration: datetime.timedelta=datetime.timedelta(days=1)):
+        self.name = name
+        self.site = site
+        self.begin = begin
+        self.duration = duration
+
+    def setDate(self,
+                begin: datetime.datetime,
+                end: datetime.datetime):
+        self.begin = begin
+        if(begin > end):
+            raise ValueError
+        self.end = end - begin
+
+    def generateTweetStr(self):
+        string = 
+        
+
+
 # Twitter OAuth認証
 def twitterOAuth():
     auth_file = open("Twitter_auth.json")
