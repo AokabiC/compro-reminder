@@ -37,12 +37,12 @@ def contests2tweets(contests):
     for i in range(tweets_num):
         tweet = tweet_title + ("\n" if(tweets_num == 1) else "("+str(i+1)+")\n")
               # if tweets are 2 or more, insert tweet number
-        try:
-            tweet += "\n".join([strings.pop() for j in range(2)])
-        except IndexError:
-            break
-        else:
-            tweets.append(tweet)
+        for j in range(2):
+            try:
+                tweet += strings.pop() + "\n"
+            except IndexError:
+                pass
+        tweets.append(tweet)
     return tweets
 
 
