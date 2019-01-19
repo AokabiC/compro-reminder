@@ -104,3 +104,15 @@ class yukicoder(ContestSite):
     
     def get_contestdata(self):
         return googlecalutil.get_contestdata(self.siteinfo)
+
+
+class LeetCode(ContestSite):
+    def __init__(self):
+        super().__init__(
+            "LeetCode",
+            "LC",
+            "tlvovsip3t3045rnkq0rt7d77c@group.calendar.google.com"
+        )
+
+    def get_contestdata(self):
+        return googlecalutil.get_contestdata(self.siteinfo)
