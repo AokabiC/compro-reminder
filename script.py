@@ -1,7 +1,7 @@
 import datetime
 import pytz
 import dtwrapper
-from contestsite import AtCoder, TopCoder, Codeforces, CSAcademy, yukicoder
+from contestsite import AtCoder, TopCoder, Codeforces, CSAcademy, yukicoder, LeetCode
 import twitterutil
 
 
@@ -13,7 +13,8 @@ def lambda_handler(event, context):
                      TopCoder(),
                      Codeforces(),
                      CSAcademy(),
-                     yukicoder())
+                     yukicoder(),
+                     LeetCode())
     contests = []
     for site in contest_sites:
         contests.extend(site.get_contestdata())
