@@ -9,8 +9,6 @@ __now = None
 def now(val=None):
     global __now
     if(not val is None):
-        if(__now):
-            raise AttributeError("now() is Read-Only")
         __now = val
     return __now
 

@@ -1,14 +1,21 @@
-import json
+import os
 import tweepy
 import dtwrapper
 
 
 def twitter_oauth():
-    auth_file = open("TwitterAuthData.json")
-    auth_list = json.load(auth_file)
-    auth_file.close()
-    auth = tweepy.OAuthHandler(auth_list["consumer_key"], auth_list["consumer_secret"])
-    auth.set_access_token(auth_list["token"], auth_list["token_secret"])
+    try:
+        auth = tweepy.OAuthHandler(
+            os.environ["TWITTER_API_CONSUMER_KEY"],
+            os.environ["TWITTER_API_CONSUMER_SECRET"]
+        )
+        auth.set_access_token(
+            os.environ["TWITTER_API_TOKEN"],
+            os.environ["TWITTER_API_TOKEN_SECRET"]
+        )
+    except KeyError:
+        print("Twitter API key does not set in os.environ")
+        raise
     return auth
 
 

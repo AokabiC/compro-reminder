@@ -36,5 +36,5 @@ PySocks = "==1.6.8"
 python_version = "3.7"
 
 [scripts]
-dev = "python script.py"
+dev = "python ./script.py"
 build = "./build.sh"

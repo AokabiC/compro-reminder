@@ -126,7 +126,7 @@ class GoogleCodeJam(ContestSite):
         super().__init__(
             "GoogleCodeJam",
             "GCJ",
-            "google.com_jqv7qt9iifsaj94cuknckrabd8@group.calendar.google.com"
+            "icc3ho2dgdka4hlen5h125cj74@group.calendar.google.com"
         )
 
     def get_contestdata(self):

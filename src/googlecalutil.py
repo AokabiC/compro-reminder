@@ -13,7 +13,7 @@ def api_auth():
     if(not _service is None):
         return _service
     scopes = ['https://www.googleapis.com/auth/calendar.readonly']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name("GoogleCalAuthData.json", scopes=scopes)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name("googlecal_credentials.json", scopes=scopes)
     http_auth = credentials.authorize(Http())
     _service = apiclient.discovery.build("calendar", "v3", http=http_auth, cache_discovery=False)
     return _service
@@ -25,14 +25,19 @@ def get_contestdata(siteinfo):
     dt_from = start.isoformat(timespec='microseconds')
     dt_to = (start+duration).isoformat()
     service = api_auth()
-    events_data = service.events().list(
-        calendarId=siteinfo.googlecal_id,
-        timeMin=dt_from,
-        timeMax=dt_to,
-        maxResults=10,
-        singleEvents=True,
-        orderBy="startTime"
-    ).execute()
+    try:
+        events_data = service.events().list(
+            calendarId=siteinfo.googlecal_id,
+            timeMin=dt_from,
+            timeMax=dt_to,
+            maxResults=10,
+            singleEvents=True,
+            orderBy="startTime"
+        ).execute()
+    except apiclient.errors.HttpError as err:
+        print(err)
+        return []
+
     events = events_data.get('items', [])
 
     contests = []
