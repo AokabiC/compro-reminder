@@ -1,0 +1,6 @@
+.env
+/dist/
+dist.zip
+/.vscode/
+/__pycache__/
+/src/googlecal_credentials.json
