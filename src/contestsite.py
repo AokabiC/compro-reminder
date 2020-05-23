@@ -34,20 +34,21 @@ class AtCoder(ContestSite):
         )
 
     def get_contestdata(self):
-        html = urlopen("https://beta.atcoder.jp/contests/")
+        html = urlopen("https://atcoder.jp/contests/")
         bs_obj = BeautifulSoup(html, "html.parser")
         table = bs_obj.find_all("table", class_="table table-default table-striped table-hover table-condensed table-bordered small")[1]
         rows = table.find_all("tr")
+
         del rows[0]
 
         contests = []
         for row in rows:
-            contest_data = [start, contestname, duration, rated]
-            contest_data = [cell.get_text() for cell in row.find_all("td")]
+            # contest_data = [start, contestname, duration, rated]
+            contest_data = row.find_all("td")
 
-            contest_name = contest_data[1]
-            contest_begin = parse(contest_data[0]).astimezone(pytz.timezone('Asia/Tokyo'))
-            contest_duration = dtwrapper.str2timedelta(contest_data[2])
+            contest_name = contest_data[1].find("a").get_text()
+            contest_begin = parse(contest_data[0].get_text()).astimezone(pytz.timezone('Asia/Tokyo'))
+            contest_duration = dtwrapper.str2timedelta(contest_data[2].get_text())
             contest = ContestData(contest_name,
                                   self.siteinfo,
                                   contest_begin,
