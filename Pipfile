@@ -37,4 +37,4 @@ python_version = "3.7"
 
 [scripts]
 dev = "python ./script.py"
-build = "./build.sh"
+build = "sh ./build.sh"
