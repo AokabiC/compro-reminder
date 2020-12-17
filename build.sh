@@ -7,7 +7,7 @@ cp -r src/* dist
 pipenv lock -r > requirements.txt
 pip install -r requirements.txt -t dist
 cd dist
-zip -r ../dist.zip *
+zip -rq ../dist.zip *
 cd ..
 rm requirements.txt
 echo "Done."
