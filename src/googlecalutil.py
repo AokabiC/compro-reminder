@@ -2,21 +2,27 @@ import datetime
 from dateutil.parser import parse
 import dtwrapper
 import pytz
-from httplib2 import Http
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2 import service_account
 import apiclient
 from contestdata import ContestData
 
 _service = None
+
+
 def api_auth():
     global _service
     if(not _service is None):
         return _service
-    scopes = ['https://www.googleapis.com/auth/calendar.readonly']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name("googlecal_credentials.json", scopes=scopes)
-    http_auth = credentials.authorize(Http())
-    _service = apiclient.discovery.build("calendar", "v3", http=http_auth, cache_discovery=False)
+    SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+    # follow https://developers.google.com/identity/protocols/oauth2/service-account
+    # then get service account's credentials.
+    SERVICE_ACCOUNT_FILE = 'google_services.json'
+    credentials = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    _service = apiclient.discovery.build(
+        "calendar", "v3", credentials=credentials)
     return _service
+
 
 def get_contestdata(siteinfo):
     start = dtwrapper.now()
@@ -44,8 +50,10 @@ def get_contestdata(siteinfo):
     for event in events:
         try:
             contest_name = event["summary"]
-            contest_begin = parse(event["start"]["dateTime"]).astimezone(pytz.timezone('Asia/Tokyo'))
-            contest_end = parse(event["end"]["dateTime"]).astimezone(pytz.timezone('Asia/Tokyo'))
+            contest_begin = parse(event["start"]["dateTime"]).astimezone(
+                pytz.timezone('Asia/Tokyo'))
+            contest_end = parse(event["end"]["dateTime"]).astimezone(
+                pytz.timezone('Asia/Tokyo'))
             contest_duration = contest_end - contest_begin
             contest = ContestData(contest_name,
                                   siteinfo,

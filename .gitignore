@@ -3,4 +3,4 @@
 dist.zip
 /.vscode/
 /__pycache__/
-/src/googlecal_credentials.json
+/src/google_services.json
